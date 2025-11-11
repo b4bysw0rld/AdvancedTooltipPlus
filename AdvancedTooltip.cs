@@ -99,7 +99,7 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
         }
     }
 
-    public override void Tick()
+    public override Job Tick()
     {
         if (!Initialized) Initialise();
 
@@ -125,6 +125,8 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
         }
+
+        return null;
     }
 
     public override void Render()
