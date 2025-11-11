@@ -37,14 +37,8 @@ public class ItemModsSettings
     [Menu("Enable Fast Mods", "Show quick mod tier info next to tooltip")]
     public ToggleNode EnableFastMods { get; set; } = new ToggleNode(false);
     
-    public ToggleNode EnableFastModsTags { get; set; } = new ToggleNode(false);
+    [Menu("Fast Mods Anchor", "Position for Fast Mods display: Top or Bottom of tooltip")]
     public ListNode FastModsAnchor { get; set; } = new ListNode();
-    
-    [Menu("Override Tooltip Hotkey", "Hold this key to draw advanced tooltip on top of the original game tooltip.\nCan be used to avoid drawing over other parts of your HUD.")]
-    public HotkeyNode OverrideTooltip { get; set; } = new HotkeyNode(System.Windows.Forms.Keys.LShiftKey);
-    
-    [Menu("Inverse Override", "The advanced tooltip will always be drawn on top of the original game tooltip unless the button assigned above is held.")]
-    public ToggleNode InverseOverride { get; set; } = new(false);
     
     public ColorNode BackgroundColor { get; set; } = new ColorBGRA(0, 0, 0, 220);
     public ColorNode PrefixColor { get; set; } = new ColorBGRA(178, 184, 255, 255);
@@ -58,13 +52,4 @@ public class ItemModsSettings
     
     [Menu("Dump Stat Names", "Hotkey to copy stat names to clipboard (for debugging)")]
     public HotkeyNode DumpStatNames { get; set; } = new HotkeyNode(System.Windows.Forms.Keys.None);
-
-    public bool GetOverrideTooltipState()
-    {
-        if (!InverseOverride && OverrideTooltip.PressedOnce() || InverseOverride && !OverrideTooltip.PressedOnce())
-        {
-            return true;
-        }
-        return false;
-    }
 }

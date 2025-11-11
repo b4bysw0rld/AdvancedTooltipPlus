@@ -54,20 +54,8 @@ public class FastModsModule
 
                 var initialTextSize = textSize;
 
-                if (_modsSettings.EnableFastModsTags)
-                {
-                    foreach (var tag in modTierInfo.ModTags)
-                    {
-                        var modTypeTextSize = _graphics.DrawText(tag.Name, textPos, tag.Color,
-                            FontAlign.Right | FontAlign.VerticalCenter);
-
-                        textSize.X += modTypeTextSize.X + 5;
-                        textPos.X -= modTypeTextSize.X + 5;
-                    }
-
-                    if (modTierInfo.ModTags.Count > 0)
-                        textSize.X += 5;
-                }
+                // Tags not supported in PoE1
+                // Tag display code removed for PoE1 compatibility
 
                 var rectangleF = new RectangleF(drawPos.X - textSize.X, drawPos.Y, textSize.X + 6,
                     height * modTierInfo.ModLines);
@@ -138,31 +126,9 @@ public class FastModsModule
             }
 
             ModTierInfo currentModTierInfo = new ModTierInfo(affix, color);
-
-            // Add tags if they exist (optional feature - may not work in PoE1)
-            if (_modsSettings.EnableFastModsTags && mod.Tags.Count > 0)
-            {
-                foreach (string tag in mod.Tags)
-                {
-                    var modTagColor = tag switch
-                    {
-                        "Fire" => Color.Red,
-                        "Cold" => new Color(41, 102, 241),
-                        "Life" => Color.Magenta,
-                        "Lightning" => Color.Yellow,
-                        "Physical" => new Color(225, 170, 20),
-                        "Critical" => new Color(168, 220, 26),
-                        "Mana" => new Color(20, 240, 255),
-                        "Attack" => new Color(240, 100, 30),
-                        "Speed" => new Color(0, 255, 192),
-                        "Caster" => new Color(216, 0, 255),
-                        "Elemental" => Color.White,
-                        "Gem Level" => new Color(200, 230, 160),
-                        _ => Color.Gray
-                    };
-                    currentModTierInfo.ModTags.Add(new ModTag(tag, modTagColor));
-                }
-            }
+            
+            // Tags don't work in PoE1 (tooltip parsing limitation)
+            // Keeping the structure for potential future enhancement
             
             modTierInfo.Add(currentModTierInfo);
         }

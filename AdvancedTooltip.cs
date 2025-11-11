@@ -163,17 +163,7 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
         {
             var tooltipTop = origTooltipRect.Bottom + 5;
             var tooltipLeft = origTooltipRect.Left;
-            var modPosition = new Vector2(0, 0);
-
-            if (Settings.ItemMods.GetOverrideTooltipState())
-            {
-                tooltipTop = origTooltipRect.Top + origTooltipHeaderOffset;
-                modPosition = new Vector2(tooltipLeft + 5, tooltipTop + 34);
-            }
-            else
-            {
-                modPosition = new Vector2(tooltipLeft + 5, tooltipTop + 4);
-            }
+            var modPosition = new Vector2(tooltipLeft + 5, tooltipTop + 4);
 
             // Sort mods
             mods = mods
@@ -205,10 +195,7 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
 
             if (height > 4)
             {
-                var backgroundHeight = Settings.ItemMods.GetOverrideTooltipState()
-                    ? Math.Max(height, origTooltipRect.Height - origTooltipHeaderOffset)
-                    : height;
-                var modsRect = new RectangleF(tooltipLeft, tooltipTop, origTooltipRect.Width, backgroundHeight);
+                var modsRect = new RectangleF(tooltipLeft, tooltipTop, origTooltipRect.Width, height);
                 Graphics.DrawBox(modsRect, Settings.ItemMods.BackgroundColor);
             }
         }
@@ -265,12 +252,6 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
             DrawWeaponDps(origTooltipRect, origTooltipHeaderOffset, poeEntity, mods, weaponComponent);
         }
 
-        // Exit if override mode is active (don't draw fast mods over the original tooltip)
-        if (Settings.ItemMods.GetOverrideTooltipState())
-        {
-            return;
-        }
-
         // Fast Mods Display
         if (Settings.ItemMods.EnableFastMods &&
             (modsComponent == null ||
@@ -288,11 +269,33 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
         var oldPosition = position;
         var settings = Settings.ItemMods;
 
+        // Check if this is a crafted mod first
+        if (item.IsCrafted)
+        {
+            var craftedColor = new Color(180, 96, 255);
+            var craftedText = "[CRAFTED]";
+            
+            Graphics.DrawText(craftedText, position, craftedColor);
+            
+            // Display the mod text
+            if (!string.IsNullOrEmpty(item.HumanName))
+            {
+                var affixTypeWidth = Graphics.MeasureText(craftedText + " ").X;
+                var displayText = item.HumanName;
+                var txSize = Graphics.DrawText($" {displayText}", position.Translate(affixTypeWidth, 0), Color.Gainsboro);
+                position.Y += txSize.Y;
+            }
+            
+            return Math.Abs(position.Y - oldPosition.Y) > 0.001f
+                ? oldPosition with { Y = position.Y + marginBottom }
+                : oldPosition;
+        }
+
         var (affixTypeText, color) = item.AffixType switch
         {
             ModType.Prefix => ("[P]", settings.PrefixColor.Value),
             ModType.Suffix => ("[S]", settings.SuffixColor.Value),
-            ModType.Corrupted => ("[C]", new Color(220, 20, 60)),
+            ModType.Corrupted => ("[COR]", new Color(220, 20, 60)),
             ModType.Unique => ("[U]", new Color(255, 140, 0)),
             ModType.Enchantment => ("[E]", new Color(255, 0, 255)),
             ModType.Nemesis => ("[NEM]", new Color(255, 20, 147)),
@@ -347,12 +350,6 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
                 _ => default
             };
 
-            // Check for special domains (Crafted mods get purple color)
-            if (item.Record.Domain == ModDomain.Crafted)
-            {
-                affixTextColor = new Color(180, 96, 255);
-            }
-
             var affixTierText = (totalTiers > 1 ? $"T{item.Tier} " : string.Empty);
             var affixTierSize = item.AffixType switch
             {
@@ -360,12 +357,6 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
                 ModType.Suffix => Graphics.DrawText(affixTierText, position.Translate(affixTypeWidth), affixTextColor),
                 _ => default
             };
-
-            // Special handling for crafted mods
-            if (item.Record.Domain == ModDomain.Crafted)
-            {
-                affixTierSize = Graphics.DrawText("Crafted ", position.Translate(affixTypeWidth), affixTextColor);
-            }
 
             // Show short names if enabled
             if (Settings.ItemMods.ShowShortNames && item.ShortName.Length > 0)
