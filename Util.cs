@@ -3,6 +3,7 @@ using AdvancedTooltip.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace AdvancedTooltip
 {
@@ -28,6 +29,14 @@ namespace AdvancedTooltip
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Extension method to translate Vector2 by x,y offsets (PoE1 compatibility)
+        /// </summary>
+        internal static Vector2 Translate(this Vector2 vector, float x, float y = 0)
+        {
+            return new Vector2(vector.X + x, vector.Y + y);
         }
     }
 

@@ -34,9 +34,6 @@ public class ItemModsSettings
     [Menu("Enable Mod Count", "Display T1/T2/T3 mod counter in corner")]
     public ToggleNode EnableModCount { get; set; } = new(true);
     
-    [Menu("Mod Count Size", "Scale factor for the mod count display")]
-    public RangeNode<float> ModCountSize { get; set; } = new RangeNode<float>(1, 0.5f, 2f);
-    
     [Menu("Enable Fast Mods", "Show quick mod tier info next to tooltip")]
     public ToggleNode EnableFastMods { get; set; } = new ToggleNode(false);
     

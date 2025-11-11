@@ -15,9 +15,6 @@ public class WeaponDpsSettings
 
     public ColorNode TextColor { get; set; } = new ColorBGRA(255, 255, 255, 255);
     
-    [Menu("DPS Text Size", "Scale factor for DPS text")]
-    public RangeNode<float> DpsTextSize { get; set; } = new RangeNode<float>(1, 0.5f, 2f);
-    
     public ColorNode BackgroundColor { get; set; } = new ColorBGRA(255, 255, 255, 150);
     public ColorNode DmgFireColor { get; set; } = new ColorBGRA(255, 0, 0, 255);
     public ColorNode DmgColdColor { get; set; } = new ColorBGRA(0, 128, 255, 255);

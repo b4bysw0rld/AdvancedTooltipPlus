@@ -224,14 +224,11 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
             {
                 var tierNoteHeight = Graphics.MeasureText("T").Y * (Math.Sign(t1) + Math.Sign(t2) + Math.Sign(t3)) + 5;
                 var width = Graphics.MeasureText("T1 x6").X + 10;
-                var scale = Settings.ItemMods.ModCountSize;
-                Graphics.DrawBox(startPosition, startPosition + new Vector2(width * scale, tierNoteHeight * scale), Settings.ItemMods.BackgroundColor);
-                Graphics.DrawFrame(startPosition, startPosition + new Vector2(width * scale, tierNoteHeight * scale), Color.Gray, 1);
-                startPosition.X += 5 * scale;
-                startPosition.Y += 2 * scale;
+                Graphics.DrawBox(startPosition, startPosition + new Vector2(width, tierNoteHeight), Settings.ItemMods.BackgroundColor);
+                Graphics.DrawFrame(startPosition, startPosition + new Vector2(width, tierNoteHeight), Color.Gray, 1);
+                startPosition.X += 5;
+                startPosition.Y += 2;
                 
-                var oldScale = Graphics.TextScale;
-                Graphics.TextScale = scale;
                 if (t1 > 0)
                 {
                     startPosition.Y += Graphics.DrawText($"T1 x{t1}", startPosition, Settings.ItemMods.T1Color).Y;
@@ -246,7 +243,6 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
                 {
                     startPosition.Y += Graphics.DrawText($"T3 x{t3}", startPosition, Settings.ItemMods.T3Color).Y;
                 }
-                Graphics.TextScale = oldScale;
             }
         }
 
@@ -255,20 +251,12 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
         {
             var itemLevel = "iLVL: " + Convert.ToString(modsComponent?.ItemLevel ?? 0);
             var itemLevelPosition = new Vector2(origTooltipRect.TopLeft.X, origTooltipRect.TopLeft.Y + origTooltipHeaderOffset);
-            var textSize = Graphics.MeasureText(itemLevel);
-            var iLvlScale = Settings.ItemLevel.TextSize;
             var backdropSize = new Vector2(385 * 0.4f, 68 * 0.4f);
-            backdropSize.X *= (float)Math.Pow(iLvlScale, 0.6);
-            backdropSize.Y *= (float)Math.Pow(iLvlScale, 0.6);
             var backdropPosition = new Vector2(itemLevelPosition.X, itemLevelPosition.Y);
             Graphics.DrawImage("backdrop_left.png", new RectangleF(backdropPosition.X, backdropPosition.Y, backdropSize.X, backdropSize.Y),
                 Settings.WeaponDps.BackgroundColor);
             itemLevelPosition = itemLevelPosition.Translate(5, 4);
-            
-            var oldScale = Graphics.TextScale;
-            Graphics.TextScale = iLvlScale;
             Graphics.DrawText(itemLevel, itemLevelPosition, Settings.ItemLevel.TextColor);
-            Graphics.TextScale = oldScale;
         }
 
         // Weapon DPS Display
@@ -584,17 +572,11 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
         }
 
         var textPosition = new Vector2(clientRect.Right - 8, clientRect.Y);
-        var backdropSize = new Vector2(385, 68);
-        var dpsScale = Settings.WeaponDps.DpsTextSize;
-        backdropSize.X *= dpsScale;
-        backdropSize.Y *= dpsScale;
+        var backdropSize = new Vector2(385 * 0.26f, 68 * 0.26f);
         var backdropPosition = new Vector2(textPosition.X - backdropSize.X + 10, textPosition.Y - 2);
         Graphics.DrawImage("backdrop.png", new RectangleF(backdropPosition.X, backdropPosition.Y, backdropSize.X, backdropSize.Y),
             settings.BackgroundColor);
         textPosition = textPosition.Translate(0, 4);
-        
-        var oldScale = Graphics.TextScale;
-        Graphics.TextScale = dpsScale;
         
         var pDpsSize = pDps > 0
             ? Graphics.DrawText("pDPS " + pDps.ToString("#"), textPosition, FontAlign.Right)
@@ -614,7 +596,5 @@ public class AdvancedTooltip : BaseSettingsPlugin<AdvancedTooltipSettings>
                     Color.White, FontAlign.Right)
                 : Vector2.Zero;
         }
-        
-        Graphics.TextScale = oldScale;
     }
 }
