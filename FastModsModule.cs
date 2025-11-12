@@ -5,11 +5,12 @@ using System.Text.RegularExpressions;
 using AdvancedTooltip.Settings;
 using ExileCore;
 using ExileCore.PoEMemory.Elements;
+using ExileCore.PoEMemory.MemoryObjects;
 using ExileCore.Shared.Enums;
 using SharpDX;
 using Vector2 = System.Numerics.Vector2;
 using RectangleF = SharpDX.RectangleF;
-using UiElement = ExileCore.PoEMemory.Elements.Element;
+using UiElement = ExileCore.PoEMemory.MemoryObjects.Element;
 
 namespace AdvancedTooltip;
 
