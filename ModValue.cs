@@ -142,6 +142,8 @@ public class ModValue
             var modRecordKey = Record.Key.Where(char.IsLetter).ToArray();
             var optimizedListTiers = allTiers.Where(x => x.Key.StartsWith(new string(modRecordKey), StringComparison.Ordinal)).ToList();
 
+            Logger.Log($"Found {optimizedListTiers.Count} tier records for {Record.Group}");
+
             foreach (var tmp in optimizedListTiers)
             {
                 var keyrcd = tmp.Key.Where(char.IsLetter).ToArray();
@@ -158,6 +160,7 @@ public class ModValue
                     if (Tier <= 0)
                     {
                         Tier = TotalTiers;
+                        Logger.Log($"Matched tier {Tier} from recordsByTier for {Record.Key}");
                     }
                     tierFound = true;
                 }
@@ -176,7 +179,13 @@ public class ModValue
                 {
                     Tier = result;
                     TotalTiers = optimizedListTiers.Count;
+                    Logger.Log($"Parsed tier {Tier} from Record.Tier string '{Record.Tier}'");
                 }
+            }
+
+            if (Tier <= 0)
+            {
+                Logger.LogError($"Failed to determine tier for mod: {Record.Key} (Group: {Record.Group}, AffixType: {AffixType}, HumanName: {HumanName})");
             }
 
             double hue = TotalTiers == 1 ? 180 : 120 - Math.Min(subOptimalTierDistance, 3) * 40;
@@ -184,6 +193,8 @@ public class ModValue
         }
         else
         {
+            Logger.LogError($"No recordsByTier entry found for mod: {Record.Key} (Group: {Record.Group}, AffixType: {AffixType})");
+            
             // Fallback color calculation
             double hue = Tier == 1 ? 180 : 120 - Math.Min(Tier > 0 ? Tier - 1 : 0, 3) * 40;
             Color = ConvertHelper.ColorFromHsv(hue, Tier == 1 ? 0 : 1, 1);
